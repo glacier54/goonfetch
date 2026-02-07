@@ -1,0 +1,17 @@
+[project]
+name = "goonfetch"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "certifi==2026.1.4",
+    "charset-normalizer==3.4.4",
+    "idna==3.11",
+    "numpy==2.4.2",
+    "opencv-python==4.13.0.92",
+    "pathlib==1.0.1",
+    "platformdirs==4.5.1",
+    "requests==2.32.5",
+    "urllib3==2.6.3",
+]
