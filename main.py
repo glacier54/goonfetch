@@ -22,11 +22,12 @@ def get_images(auth, tags):
     r = requests.get(url).json()
     return random.choice(r)
 def main(obj, ma, protocol):
-    img_bytes = requests.get(obj['preview_url']).content
     if protocol:
+        img_bytes = requests.get(obj['file_url']).content
         print_kitty(BytesIO(img_bytes), (int(ma[0]), int(ma[1]-4)))
         w = ma[0]
     else:
+        img_bytes = requests.get(obj['preview_url']).content
         w, _ = to_ascii(img_bytes, (int(ma[0]), int(ma[1]-4)))
     print(f"https://rule34.xxx/index.php?page=post&s=view&id={obj['id']}")
     print(obj['owner'])
