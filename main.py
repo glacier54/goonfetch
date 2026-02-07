@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from to_ascii import main as to_ascii
 from to_kitty import print_kitty
 import requests
