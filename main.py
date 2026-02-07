@@ -39,6 +39,7 @@ if __name__ == '__main__':
     parser.add_argument('--max-columns', '-c', type=int, default=size.columns//2, help='Max character columns. Defaults to 1/2 terminal width.')
     parser.add_argument('--max-rows', '-r', type=int, default=size.lines-4, help='Max character rows. Defaults to terminal height.')
     parser.add_argument('--kitty', action='store_true', required=False, help='Use Kitty Graphics Protocol.')
+    parser.add_argument('additional_tags', nargs='*', help="Add rule34 tags.")
     args = parser.parse_args()
     path = Path(user_config_dir("goonfetch")) / "config.toml"
     if not path.exists:
@@ -48,4 +49,4 @@ if __name__ == '__main__':
     if not cfg.get('auth'):
         print("No auth found. You can create an api-key and find your user id in the rule34.xxx account settings page.")
     auth = cfg.get('auth')
-    main(get_images(auth, cfg.get('tags')), (args.max_columns, args.max_rows+4), args.kitty)
+    main(get_images(auth, cfg.get('tags')+' '+' '.join(args.additional_tags)), (args.max_columns, args.max_rows+4), args.kitty)
