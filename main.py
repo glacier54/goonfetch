@@ -71,7 +71,7 @@ def render(ro, ma, protocol):
         w,h = ma
     else:
         img_bytes = requests.get(ro.highres_url).content
-        w, h = to_ascii(img_bytes, (int(ma[0]), int(ma[1]-4)))
+        w, h = to_ascii(BytesIO(img_bytes), (int(ma[0]), int(ma[1]-4)))
     return w,h
 
 def confparse():
