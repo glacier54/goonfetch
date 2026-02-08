@@ -1,5 +1,7 @@
-from cv2 import imdecode, resize, IMREAD_COLOR, INTER_LINEAR
 import numpy as np
+from PIL import Image
+from io import BytesIO
+
 
 def ansi(x, fg, bg=None, isBold=False):
     parts = []
@@ -25,14 +27,16 @@ chars = list(reversed("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<
 def main(imbytes, rc):
     maw, mah = rc
     maw -= 3
-    arr = np.frombuffer(imbytes, dtype=np.uint8)
-    img = imdecode(arr, IMREAD_COLOR)
-    h_o, w_o = img.shape[:2]
+    imag = Image.open(imbytes).convert('RGB')
+    h_o, w_o = imag.size
     if h_o*0.55/mah > w_o/maw:
         w, h = int(w_o*mah/h_o/0.55), mah
     else:
         w, h = maw, int(h_o*maw/w_o*0.55)
-    img = resize(img, (w, h), interpolation=INTER_LINEAR)
+    print('laoded')
+    imag = imag.resize((w, h), Image.NEAREST)
+    img = np.array(imag, dtype='uint8')
+    
     wts = np.array([77, 150, 29], dtype=np.uint16)  # uint16 to avoid overflow
     dist = np.sum(img.astype(np.uint16) * wts, axis=2) >> 8  # integer division by 256
     dist = dist.astype(np.uint8)  # optional: back to uint8
