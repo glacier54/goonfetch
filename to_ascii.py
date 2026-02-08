@@ -1,4 +1,4 @@
-import cv2
+from cv2 import imdecode, resize, IMREAD_COLOR, INTER_LINEAR
 import numpy as np
 
 def ansi(x, fg, bg=None, isBold=False):
@@ -26,13 +26,13 @@ def main(imbytes, rc):
     maw, mah = rc
     maw -= 3
     arr = np.frombuffer(imbytes, dtype=np.uint8)
-    img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    img = imdecode(arr, IMREAD_COLOR)
     h_o, w_o = img.shape[:2]
     if h_o*0.55/mah > w_o/maw:
         w, h = int(w_o*mah/h_o/0.55), mah
     else:
         w, h = maw, int(h_o*maw/w_o*0.55)
-    img = cv2.resize(img, (w, h), interpolation=cv2.INTER_LINEAR)
+    img = resize(img, (w, h), interpolation=INTER_LINEAR)
     wts = np.array([77, 150, 29], dtype=np.uint16)  # uint16 to avoid overflow
     dist = np.sum(img.astype(np.uint16) * wts, axis=2) >> 8  # integer division by 256
     dist = dist.astype(np.uint8)  # optional: back to uint8
