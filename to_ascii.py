@@ -33,7 +33,6 @@ def main(imbytes, rc):
         w, h = int(w_o*mah/h_o/0.55), mah
     else:
         w, h = maw, int(h_o*maw/w_o*0.55)
-    print('laoded')
     imag = imag.resize((w, h), Image.NEAREST)
     img = np.array(imag, dtype='uint8')
     
