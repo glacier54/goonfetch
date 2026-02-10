@@ -26,7 +26,6 @@ def ansi(x, fg, bg=None, isBold=False):
 chars = list(reversed("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`\'. "))
 def main(imbytes, rc):
     maw, mah = rc
-    print(maw, mah)
     maw -= 3
     mah /= 0.55
     mah += 1
@@ -54,7 +53,7 @@ def main(imbytes, rc):
             isBold = x_o % 2 == 1
             s += ansi(x, (fr, fg, fb), isBold=isBold)
         print(f'{i:02d} '+s)
-    return img.shape[:-1]
+    return img.shape[:-1][::-1]
 if __name__ == '__main__':
     with open('image.png', 'rb') as f:
         by = f.read()
