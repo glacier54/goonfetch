@@ -15,9 +15,14 @@ auth = "api_key=[API_KEY]&user_id=[USER_ID]" # get api key from https://rule34.x
 tags = "-ai_generated -video score:>10 -anthro -ai_assisted -animal -beastiality"
 
 [e621]
-auth = "login=glacier54&api_key=dJfDKFFsx3o4wAH762udRBBa"
+auth = "login=api_key=[API_KEY]&user_id=[USER_ID]"
 tags = "-young -shota -loli -scat -watersports -gore -video -webm -animated score:>10"
-
+[e621]
+auth = "login=[API_KEY]&user_id=[USER_ID]"
+tags = "-young -shota -loli -scat -watersports -gore -video -webm -animated score:>10"
+[gelbooru]
+auth = "login=api_key=[API_KEY]&user_id=[USER_ID]"
+tags = "-young -shota -loli -scat -watersports -gore -video -webm -animated score:>10"
 ```
 Build:
 ```
