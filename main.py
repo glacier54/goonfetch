@@ -48,6 +48,54 @@ def get_rule34(auth, tags):
     return ret
 
 
+
+def get_gelbooru(auth, tags):
+    # auth expected like: "&api_key=abc&user_id=1234"
+    auth_params = dict(urllib.parse.parse_qsl(auth))
+
+    params = {
+        "page": "dapi",
+        "s": "post",
+        "q": "index",
+        "json": "1",
+        "limit": str(LIMIT),
+        "tags": tags,
+        **auth_params,
+    }
+
+    resp = requests.get(
+        "https://gelbooru.com/index.php",
+        params=params,
+        headers={"User-Agent": "goonfetch/0.1.0"},
+    )
+
+    if resp.status_code != 200:
+        print("Gelbooru HTTP:", resp.status_code)
+        print("URL used:", resp.url)        # super useful
+        print(resp.text[:300])
+        raise RuntimeError("Gelbooru returned non-200 response")
+
+    data = resp.json()
+    posts = data["post"] if isinstance(data, dict) and "post" in data else data
+    if not posts:
+        raise RuntimeError("No posts returned (check tags/auth).")
+
+    req = random.choice(posts)
+
+    return ReturnObject(
+        lowres_url=req.get("preview_url", ""),
+        highres_url=req.get("file_url", ""),
+        page_url=f"https://gelbooru.com/index.php?page=post&s=view&id={req['id']}",
+        author=req.get("owner", "unknown"),
+        tags=req.get("tags", ""),
+        score=str(req.get("score", "0")),
+    )
+
+
+
+
+
+
 def get_e621(auth, tags):
     params = {"tags": tags, "limit": str(LIMIT)}
     base_url = "https://e621.net/posts.json?"
@@ -100,6 +148,11 @@ def main(data, ma, protocol):
     print(f"score: {data.score}")
 if __name__ == '__main__':
     conf, args = confparse()
+
+    tags = conf.get("tags", "")
+    if args.additional_tags:
+        tags = (tags + " " + " ".join(args.additional_tags)).strip()
+
     if not conf:
         raise ValueError("No auth found. You can create an api-key and find your user id/username in the e621.net/rule34.xxx user settings page.")
     match args.mode:
@@ -107,5 +160,7 @@ if __name__ == '__main__':
             data = get_rule34(conf['auth'], conf['tags'])
         case 'e621':
             data = get_e621(conf['auth'], conf['tags'])
+        case 'gelbooru':
+            data = get_gelbooru(conf['auth'], tags)  #for tags to register when used in a prompt for gelb, i had to change 'conf['tags']' to just 'tags', it might have to change for the others too.
 
     main(data, (args.max_columns, args.max_rows+4), args.kitty)
