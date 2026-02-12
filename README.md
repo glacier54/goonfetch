@@ -10,16 +10,17 @@ example:
 ```toml
 # .config/goonfetch/config.toml
 default = "rule34" # default api supplier
-# get api key from https://rule34.xxx/index.php?page=account&s=options, after making an account
+# get api key from i.e. https://rule34.xxx/index.php?page=account&s=options, after making an account, keep in mind you need a different api key per supplier
 [rule34]
-auth = "api_key=[API_KEY]&user_id=[USER_ID]" 
-tags = "-ai_generated -video score:>10 -anthro -ai_assisted -animal -beastiality"
+auth = "api_key=[API_KEY]&user_id=[ID]"
+tags = "-young -shota -loli -scat -watersports -gore -video -webm -animated score:>10"
 [e621]
-auth = "login=[API_KEY]&user_id=[USER_ID]"
+auth = "login=[USERNAME]&api_key=[API_KEY]"
 tags = "-young -shota -loli -scat -watersports -gore -video -webm -animated score:>10"
 [gelbooru]
-auth = "login=api_key=[API_KEY]&user_id=[USER_ID]"
+auth = "api_key=[API_KEY]&user_id=[ID]"
 tags = "-young -shota -loli -scat -watersports -gore -video -webm -animated score:>10"
+
 ```
 Build:
 ```
