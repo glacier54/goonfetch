@@ -111,11 +111,11 @@ def confparse():
     size = shutil.get_terminal_size(fallback=(60, 24))
     path = Path(user_config_dir("goonfetch")) / "config.toml"
     cfg = tomllib.loads(path.read_text())
-    parser = argparse.ArgumentParser(description="Example with optional args")
-    parser.add_argument('--max-columns', '-c', type=int, default=size.columns, help='Max character columns. Defaults to 1/2 terminal width.')
+    parser = argparse.ArgumentParser(description=f"A rule34 fetching tool. Requires a config.toml to exist. For more information go to https://github.com/glacier54/goonfetch")
+    parser.add_argument('--max-columns', '-c', type=int, default=size.columns, help='Max character columns. Defaults to terminal width.')
     parser.add_argument('--max-rows', '-r', type=int, default=size.lines-7, help='Max character rows. Defaults to terminal height.')
     parser.add_argument('--kitty', action='store_true', required=False, help='Use Kitty Graphics Protocol.')
-    parser.add_argument('--mode', choices=["rule34", "e621", "gelbooru"], default=cfg.get("default", "rule34"), help='Set API call to rule34 or e621.')
+    parser.add_argument('--mode', choices=["rule34", "e621", "gelbooru"], default=cfg.get("default", "rule34"), help='Set API provider.')
     parser.add_argument('additional_tags', nargs='*', help="Add rule34 tags.")
     args = parser.parse_args()
     if not path.exists:
