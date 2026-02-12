@@ -29,10 +29,10 @@ def main(imbytes, rc):
     maw -= 3
     mah /= 0.55
     mah += 1
-    imag = Image.open(imbytes).convert('RGB')
+    imag = Image.open(imbytes)
     imag.thumbnail((maw, mah), Image.BILINEAR)
     imag = imag.resize((imag.width, int(imag.height * 0.55)), Image.BILINEAR)
-    img = np.array(imag, dtype='uint8')
+    img = np.array(imag.convert('RGB'), dtype='uint8')
     
     wts = np.array([77, 150, 29], dtype=np.uint16)  # uint16 to avoid overflow
     dist = np.sum(img.astype(np.uint16) * wts, axis=2) >> 8  # integer division by 256
