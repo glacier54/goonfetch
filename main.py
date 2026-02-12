@@ -99,12 +99,14 @@ def get_e621(parms):
         score=req["score"]["total"]
     )
     return ret
-def render(ro, ma, protocol):
+def render(ro, ma, no_ascii):
     img_bytes = requests.get(ro.highres_url).content
-    if protocol:
+    if not no_ascii:
+        return to_ascii(BytesIO(img_bytes), (int(ma[0]), int(ma[1]-4)))
+    if "KITTY_WINDOW_ID" in os.environ:
         w, h = to_kitty(BytesIO(img_bytes), (int(ma[0]+3), int(ma[1]-4)))
     else:
-        w, h = to_ascii(BytesIO(img_bytes), (int(ma[0]), int(ma[1]-4)))
+        w, h = to_ascii(BytesIO(img_bytes), (int(ma[0]), int(ma[1]-4)), use_bg=True)
     return w,h
 
 def confparse():
@@ -114,7 +116,7 @@ def confparse():
     parser = argparse.ArgumentParser(description=f"A rule34 fetching tool. Requires a config.toml to exist. For more information go to https://github.com/glacier54/goonfetch")
     parser.add_argument('--max-columns', '-c', type=int, default=size.columns, help='Max character columns. Defaults to terminal width.')
     parser.add_argument('--max-rows', '-r', type=int, default=size.lines-7, help='Max character rows. Defaults to terminal height.')
-    parser.add_argument('--kitty', action='store_true', required=False, help='Use Kitty Graphics Protocol.')
+    parser.add_argument('--no-ascii', action='store_true', required=False, help='Use either kitty image protocol (when available) or a pixelated image instead of ascii.')
     parser.add_argument('--mode', choices=["rule34", "e621", "gelbooru"], default=cfg.get("default", "rule34"), help='Set API provider.')
     parser.add_argument('additional_tags', nargs='*', help="Add rule34 tags.")
     args = parser.parse_args()
@@ -149,4 +151,4 @@ if __name__ == '__main__':
         case 'gelbooru':
             data = get_booru('https://gelbooru.com/index.php', conf)
 
-    main(data, (args.max_columns, args.max_rows+4), args.kitty)
+    main(data, (args.max_columns, args.max_rows+4), args.no_ascii)

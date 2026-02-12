@@ -24,7 +24,7 @@ def ansi(x, fg, bg=None, isBold=False):
 
 
 chars = list(reversed("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`\'. "))
-def main(imbytes, rc):
+def main(imbytes, rc, use_bg=False):
     maw, mah = rc
     maw -= 3
     mah /= 0.55
@@ -32,25 +32,25 @@ def main(imbytes, rc):
     imag = Image.open(imbytes)
     imag.thumbnail((maw, mah), Image.BILINEAR)
     imag = imag.resize((imag.width, int(imag.height * 0.55)), Image.BILINEAR)
-    img = np.array(imag.convert('RGB'), dtype='uint8')
-    
-    wts = np.array([255, 255, 255], dtype=np.uint16)  # uint16 to avoid overflow
-    dist = np.sum(img.astype(np.uint16) * wts, axis=2) >> 8  # integer division by 256
-    dist = dist.astype(np.uint8)  # optional: back to uint8
+    img = np.array(imag.convert('RGB'))
+    dist = np.linalg.norm(img, axis=2)
 
-    n = len(chars)*2
-    idx = np.clip(dist//3, 0, n-1)
+    n = len(chars)
+    idx = np.clip((dist/np.percentile(dist, 98)*(n-1)).astype('uint8'), 0, n-1)
     for i in range(img.shape[0]):
         s = ''
         for j in range(img.shape[1]):
-            # bb, bg, br = img[i, j]
-            fr, fg, fb = img[i, j]
-            x_o = idx[i, j]
-            # fr, fg, fb = 255, 255, 255
-            br, bg, bb = 0, 0, 0
-            x = chars[x_o//2]
-            isBold = x_o % 2 == 1
-            s += ansi(x, (fr, fg, fb), isBold=False)
+            if use_bg:
+                bg = fg = img[i, j]
+                x = ' '
+                isBold = False
+            else:
+                fg = img[i, j]
+                bg = None
+                x_o = idx[i, j]
+                x = chars[x_o]
+                isBold = False
+            s += ansi(x, fg, bg, isBold=isBold)
         print(f'{i:02d} '+s)
     return img.shape[:-1][::-1]
 if __name__ == '__main__':
