@@ -23,7 +23,7 @@ def ansi(x, fg, bg=None, isBold=False):
     return f"\033[{sgr}m{x}\033[0m"
 
 
-chars = list(reversed("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`\'. "))
+chars = list("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`\'. ")
 def main(imbytes, rc):
     maw, mah = rc
     maw -= 3
