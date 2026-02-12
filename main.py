@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from to_ascii import main as to_ascii
-from to_kitty import print_kitty
+from to_kitty import print_kitty as to_kitty
 import requests
 import random
 import shutil
@@ -100,12 +100,10 @@ def get_e621(parms):
     )
     return ret
 def render(ro, ma, protocol):
+    img_bytes = requests.get(ro.highres_url).content
     if protocol:
-        img_bytes = requests.get(ro.highres_url).content
-        print_kitty(BytesIO(img_bytes), (int(ma[0]+3), int(ma[1]-4)))
-        w,h = ma
+        w, h = to_kitty(BytesIO(img_bytes), (int(ma[0]+3), int(ma[1]-4)))
     else:
-        img_bytes = requests.get(ro.highres_url).content
         w, h = to_ascii(BytesIO(img_bytes), (int(ma[0]), int(ma[1]-4)))
     return w,h
 
@@ -114,8 +112,8 @@ def confparse():
     path = Path(user_config_dir("goonfetch")) / "config.toml"
     cfg = tomllib.loads(path.read_text())
     parser = argparse.ArgumentParser(description="Example with optional args")
-    parser.add_argument('--max-columns', '-c', type=int, default=size.columns//2, help='Max character columns. Defaults to 1/2 terminal width.')
-    parser.add_argument('--max-rows', '-r', type=int, default=size.lines, help='Max character rows. Defaults to terminal height.')
+    parser.add_argument('--max-columns', '-c', type=int, default=size.columns, help='Max character columns. Defaults to 1/2 terminal width.')
+    parser.add_argument('--max-rows', '-r', type=int, default=size.lines-7, help='Max character rows. Defaults to terminal height.')
     parser.add_argument('--kitty', action='store_true', required=False, help='Use Kitty Graphics Protocol.')
     parser.add_argument('--mode', choices=["rule34", "e621", "gelbooru"], default=cfg.get("default", "rule34"), help='Set API call to rule34 or e621.')
     parser.add_argument('additional_tags', nargs='*', help="Add rule34 tags.")
