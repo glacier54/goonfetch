@@ -124,7 +124,7 @@ def confparse():
         print("No configuration file detected.")
         exit
     source = args.mode
-    conf = cfg.get(source)
+    conf = cfg
     return conf, args
 
 def main(data, ma, protocol):
